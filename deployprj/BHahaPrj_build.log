@@ -1,0 +1,39 @@
+ant:
+
+<mkdir dir="D:\mat_workspace\deployprj\BHahaPrj\distrib" />
+<mkdir dir="D:\mat_workspace\deployprj\BHahaPrj\src" />
+mcc -W 'dotnet:BHahaPrj,BHaha,0.0,private' -T link:lib -d D:\mat_workspace\deployprj\BHahaPrj\src -w enable:specified_file_mismatch -w enable:repeated_file -w enable:switch_ignored -w enable:missing_lib_sentinel -w enable:demo_license -v class{BHaha:D:\mat_workspace\BHaha.m}
+Compiler version: 4.17 (R2012a)
+Processing D:\tool\MATLAB\R2012a\toolbox\matlab\mcc.enc
+Processing include files...
+2 item(s) added.
+Processing directories installed with MCR...
+The file D:\mat_workspace\deployprj\BHahaPrj\src\mccExcludedFiles.log contains a list of functions excluded from the CTF archive.
+1 item(s) added.
+Generating MATLAB path for the compiled application...
+Created 41 path items.
+Begin validation of MEX files: Tue Jan 27 15:27:16 2015
+End validation of MEX files: Tue Jan 27 15:27:16 2015
+Warning: Adding path "D:\mat_workspace" to Compiler path instance.
+Parsing file "D:\mat_workspace\BHaha.m"
+????(Referenced from: "Compiler Command Line").
+Parsing file "D:\tool\MATLAB\R2012a\toolbox\compiler\deploy\deployprint.m"
+????(Referenced from: "Compiler Command Line").
+Parsing file "D:\tool\MATLAB\R2012a\toolbox\compiler\deploy\printdlg.m"
+????(Referenced from: "Compiler Command Line").
+Deleting 0 temporary MEX authorization files.
+Generating file "D:\mat_workspace\deployprj\BHahaPrj\src\BHahaNative.cs".
+Generating file "D:\mat_workspace\deployprj\BHahaPrj\src\BHaha.cs".
+Generating file "D:\mat_workspace\deployprj\BHahaPrj\src\readme.txt".
+Executing command: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /nologo /optimize /doc:"D:\mat_workspace\deployprj\BHahaPrj\src\BHahaPrj.xml" /t:library /r:"D:\tool\MATLAB\R2012a\toolbox\dotnetbuilder\bin\win64\v2.0\MWArray.dll" /resource:"D:\mat_workspace\deployprj\BHahaPrj\src\BHahaPrj.ctf" /out:"D:\mat_workspace\deployprj\BHahaPrj\src\BHahaPrj.dll" "D:\mat_workspace\deployprj\BHahaPrj\src\BHaha.cs"deployprj\BHahaPrj\src\BHaha.cs(143,17): error CS0542: “BHaha”: 成员名称不能与它们的封闭类型相同
+deployprj\BHahaPrj\src\BHaha.cs(36,16): (与前一个错误相关的符号位置)
+deployprj\BHahaPrj\src\BHaha.cs(159,17): error CS0542: “BHaha”: 成员名称不能与它们的封闭类型相同
+deployprj\BHahaPrj\src\BHaha.cs(36,16): (与前一个错误相关的符号位置)
+deployprj\BHahaPrj\src\BHaha.cs(176,22): error CS0542: “BHaha”: 成员名称不能与它们的封闭类型相同
+deployprj\BHahaPrj\src\BHaha.cs(36,16): (与前一个错误相关的符号位置)
+deployprj\BHahaPrj\src\BHaha.cs(195,22): error CS0542: “BHaha”: 成员名称不能与它们的封闭类型相同
+deployprj\BHahaPrj\src\BHaha.cs(36,16): (与前一个错误相关的符号位置)
+deployprj\BHahaPrj\src\BHaha.cs(215,17): error CS0542: “BHaha”: 成员名称不能与它们的封闭类型相同
+deployprj\BHahaPrj\src\BHaha.cs(36,16): (与前一个错误相关的符号位置)
+Error: An error occurred while shelling out to CSC (error code = 1).
+Unable to build executable.

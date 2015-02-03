@@ -1,0 +1,32 @@
+ant:
+
+<mkdir dir="D:\mat_workspace\deployprj\Untitled1\distrib" />
+<mkdir dir="D:\mat_workspace\deployprj\Untitled1\src" />
+mcc -W 'dotnet:Untitled1,Class1,0.0,private' -T link:lib -d D:\mat_workspace\deployprj\Untitled1\src -w enable:specified_file_mismatch -w enable:repeated_file -w enable:switch_ignored -w enable:missing_lib_sentinel -w enable:demo_license -v class{Class1:D:\mat_workspace\MyFunc.m}
+Compiler version: 4.17 (R2012a)
+Processing D:\tool\MATLAB\R2012a\toolbox\matlab\mcc.enc
+Processing include files...
+2 item(s) added.
+Processing directories installed with MCR...
+The file D:\mat_workspace\deployprj\Untitled1\src\mccExcludedFiles.log contains a list of functions excluded from the CTF archive.
+1 item(s) added.
+Generating MATLAB path for the compiled application...
+Created 42 path items.
+Begin validation of MEX files: Tue Jan 27 09:57:59 2015
+End validation of MEX files: Tue Jan 27 09:57:59 2015
+Warning: Adding path "D:\mat_workspace" to Compiler path instance.
+Parsing file "D:\mat_workspace\MyFunc.m"
+????(Referenced from: "Compiler Command Line").
+Parsing file "D:\tool\MATLAB\R2012a\toolbox\compiler\deploy\deployprint.m"
+????(Referenced from: "Compiler Command Line").
+Parsing file "D:\tool\MATLAB\R2012a\toolbox\compiler\deploy\printdlg.m"
+????(Referenced from: "Compiler Command Line").
+Deleting 0 temporary MEX authorization files.
+Generating file "D:\mat_workspace\deployprj\Untitled1\src\Class1Native.cs".
+Generating file "D:\mat_workspace\deployprj\Untitled1\src\Class1.cs".
+Generating file "D:\mat_workspace\deployprj\Untitled1\src\readme.txt".
+Executing command: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /nologo /optimize /doc:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1.xml" /t:library /r:"D:\tool\MATLAB\R2012a\toolbox\dotnetbuilder\bin\win64\v2.0\MWArray.dll" /resource:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1.ctf" /out:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1.dll" "D:\mat_workspace\deployprj\Untitled1\src\Class1.cs"Executing command: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /nologo /optimize /doc:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1Native.xml" /t:library /r:"D:\tool\MATLAB\R2012a\toolbox\dotnetbuilder\bin\win64\v2.0\MWArray.dll" /resource:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1.ctf" /out:"D:\mat_workspace\deployprj\Untitled1\src\Untitled1Native.dll" "D:\mat_workspace\deployprj\Untitled1\src\Class1Native.cs"
+copy 'D:\mat_workspace\deployprj\Untitled1\src\Untitled1Native.dll' 'D:\mat_workspace\deployprj\Untitled1\distrib\Untitled1Native.dll'
+copy 'D:\mat_workspace\deployprj\Untitled1\src\Untitled1.dll' 'D:\mat_workspace\deployprj\Untitled1\distrib\Untitled1.dll'
+copy 'D:\mat_workspace\deployprj\Untitled1\src\readme.txt' 'D:\mat_workspace\deployprj\Untitled1\distrib\readme.txt'
+copy 'D:\mat_workspace\deployprj\Untitled1\src\Untitled1_overview.html' 'D:\mat_workspace\deployprj\Untitled1\distrib\Untitled1_overview.html'

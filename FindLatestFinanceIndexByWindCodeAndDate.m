@@ -21,40 +21,45 @@ function [] = FindLatestFinanceIndexByWindCodeAndDate(date_,w_,windField_)
     rowNum = size(Stm_IssuingDates,1);
     nDate = datenum(strDate_,'yyyymmdd');
     validRptDates = {};
+    
+    invalidRptDateCodes1 = {};
+    
     for i = 1 : rowNum
         rowData = Stm_IssuingDates(i,:);
         stm_issuingdate = rowData{1};
         nStm_issuingdate = 0;
         try
             nStm_issuingdate = datenum(stm_issuingdate,'yyyy/mm/dd');
-        catch
-            disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:',tradeCode800{i},'invalid stm_issuingdate,',stm_issuingdate]);
+        catch e
+            disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:',tradeCode800{i},'invalid stm_issuingdate,',stm_issuingdate,e]);
             validRptDates = [validRptDates;{strDate_,tradeCode800{i},NaN}];
             continue;
         end
         if nStm_issuingdate <= nDate ,
             validRptDates = [validRptDates;{strDate_,tradeCode800{i},rptDate}];
         else
-            preRptDate = GetLatestRptDate(rptDate);
-            [preFinanceData,~,~,~,preErrorid,~] = w_.wss(tradeCode800{i},'stm_issuingdate',['rptDate=',preRptDate]);
-            assert(preErrorid == 0, '#Error:FindLatestFinanceIndexByWindCodeAndDate:wss error.');
-            pre_stm_issuingdate = preFinanceData{1};
-            try
-                preNStm_issuingdate = datenum(pre_stm_issuingdate,'yyyy/mm/dd');
-            catch
-                disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:invalid format pre_stm_issuingdate,',pre_stm_issuingdate]);
-                validRptDates = [validRptDates;{strDate_,tradeCode800{i},NaN}];
-                continue;
-            end
-            if preNStm_issuingdate <= nDate ,
-                validRptDates = [validRptDates;{strDate_,tradeCode800{i},preRptDate}];
-            else
-                disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:invalid preNStm_issuingdate,',pre_stm_issuingdate]);
-                validRptDates = [validRptDates;{strDate_,tradeCode800{i},GetLatestRptDate(preRptDate)}];
-                
-            end
+            %标记 加入新矩阵，检查完后批量请求
+            invalidRptDateCodes1 = [invalidRptDateCodes1;{i, tradeCode800{i}}];
         end
     end
+    [preFinanceData,~,~,~,preErrorid,~] = w_.wss(tradeCode800{i},'stm_issuingdate',['rptDate=',GetLatestRptDate(rptDate)]);
+    assert(preErrorid == 0, '#Error:FindLatestFinanceIndexByWindCodeAndDate:wss error.');
+    pre_stm_issuingdate = preFinanceData{1};
+    try
+        preNStm_issuingdate = datenum(pre_stm_issuingdate,'yyyy/mm/dd');
+    catch
+        disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:invalid format pre_stm_issuingdate,',pre_stm_issuingdate]);
+        validRptDates = [validRptDates;{strDate_,tradeCode800{i},NaN}];
+        continue;
+    end
+    if preNStm_issuingdate <= nDate ,
+        validRptDates = [validRptDates;{strDate_,tradeCode800{i},preRptDate}];
+    else
+        disp(['#Error:FindLatestFinanceIndexByWindCodeAndDate:invalid preNStm_issuingdate,',pre_stm_issuingdate]);
+        validRptDates = [validRptDates;{strDate_,tradeCode800{i},GetLatestRptDate(preRptDate)}];
+
+    end
+            
     save('validRptDates.mat','validRptDates');
 end
 

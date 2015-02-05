@@ -1,7 +1,6 @@
-function rtnValidReportDate = FindLatestReportDateByWindCodeAndDate(date_,w_)
+function [tradeCode800,rtnValidReportDate] = FindLatestReportDateByWindCodeAndDate(date_,w_)
     strDate_ = num2str(date_);
-    %[w_wset_data,~,~,~,w_wset_errorid,~]=w_.wset('IndexConstituent',['date=',strDate_,';windcode=000906.SH']);
-    [w_wset_data,~,~,~,w_wset_errorid,~]=w_.wset('IndexConstituent','date=20150204;windcode=000906.SH');
+    [w_wset_data,~,~,~,w_wset_errorid,~]=w_.wset('IndexConstituent',['date=',strDate_,';windcode=000906.SH']);
     
     assert(w_wset_errorid == 0, '#Error:FindLatestFinanceIndexByWindCodeAndDate:wset error.');
     tradeCode800 = w_wset_data(:,2);

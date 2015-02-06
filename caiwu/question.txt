@@ -1,0 +1,12 @@
+(?<=[\w\u4e00-\u9fa5])\s{1,6}(?=[\w\u4e00-\u9fa5])
+
+'BufSize',1048576,
+
+([\w\u4e00-\u9fa5])(?:\s{1,6})([\w\u4e00-\u9fa5])
+
+\1\2
+
+
+cellstr(num2str(abs(str2num(char(gpmc(:,6))))));
+
+bargain_nu	bargain_su

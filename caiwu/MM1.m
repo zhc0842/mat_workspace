@@ -1,4 +1,5 @@
 function [str] = MM1()
+% 去除字符间的空白，如 TCL 集团，新 希 望
 	fidin = fopen('20150202-2.txt','r');
     str = '';
     while ~feof(fidin) ,

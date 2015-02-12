@@ -1,12 +1,19 @@
 function [] = MM2xls(fileName)
     if(nargin < 1)
-        % 默认打开当前目录 前一天的txt 如 20150205.txt
-        fileName = [datestr(addtodate(datenum(date),-1,'day'),'yyyymmdd'),'.txt'];
+        gap = 0;
+        wkd = weekday(date);
+        if wkd < 3 ,
+            gap = wkd;
+        end
+        % 默认打开当前目录 前一交易日的txt 如 20150205.txt 处理周一和周日的情况
+        fileName = [datestr(addtodate(datenum(date),-1-gap,'day'),'yyyymmdd'),'.txt'];
+    else
+        if ~regexpi(fileName,'txt','end') ,
+            throw('FileFormatException:only .txt is allowed');
+        end
     end
-    if ~regexpi(fileName,'txt','end') ,
-        throw('FileFormatException:only .txt is allowed');
-    end
-    fidin = fopen(fileName,'r');
+    [fidin,msg] = fopen(fileName,'r');
+    assert(fidin~=-1,msg);
     srcData0 = textscan(fidin,'%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s','BufSize',102400,'HeaderLines',2,'Delimiter',' ','MultipleDelimsAsOne',1);
     fclose(fidin);
 
@@ -16,7 +23,8 @@ function [] = MM2xls(fileName)
     end
     headline = srcData1(1,:);
     srcData = srcData1(2:end,:);
-        
+    smpl_fileName = char(srcData(1,1));
+    
     zqmr_rflag = ismember(srcData(:,4),'证券买入');
     zqmc_rflag = ismember(srcData(:,4),'证券卖出');
     
@@ -42,8 +50,8 @@ function [] = MM2xls(fileName)
     jy(nGpmrR+1:end,7:8) = gpmc(:,2:3);
     jy(1:nGpmrR,11) = gpmr(:,18);
     jy(nGpmrR+1:end,11) = gpmc(:,18);
-    jy(1:nGpmrR,16) = gpmr(:,6);
-    jy(nGpmrR+1:end,16) = regexprep(gpmc(:,6),'^-','');
+    jy(1:nGpmrR,16) = regexprep(gpmr(:,6),'\.00$','');
+    jy(nGpmrR+1:end,16) = regexprep(gpmc(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
     jy(1:nGpmrR,17) = gpmr(:,7);
     jy(nGpmrR+1:end,17) = gpmc(:,7);
     jy(1:nGpmrR,18) = gpmr(:,8);
@@ -75,8 +83,6 @@ function [] = MM2xls(fileName)
     boursecode(:) = cellstr('102');
     boursecode(gp_sh_flag) = cellstr('101');
     jy(:,46) = boursecode;
-    
-    smpl_fileName = regexprep(fileName,'\.txt','');
     
     jy_headline = {
         'pk_selfstrade','pk_corp','bill_code','trade_date',...
@@ -119,8 +125,8 @@ function [] = MM2xls(fileName)
     hg(:,10) = cellstr('D890767292');
     hg(1:nRqhgR,13) = rqhg(:,2);
     hg(nRqhgR+1:end,13) = rqgh(:,2);
-    hg(1:nRqhgR,14) = rqhg(:,6);
-    hg(nRqhgR+1:end,14) = regexprep(rqgh(:,6),'^-','');
+    hg(1:nRqhgR,14) = regexprep(rqhg(:,6),'\.00$','');
+    hg(nRqhgR+1:end,14) = regexprep(rqgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
     hg(1:nRqhgR,15) = rqhg(:,7);
     hg(nRqhgR+1:end,15) = rqgh(:,7);
     hg(1:nRqhgR,16) = rqhg(:,8);

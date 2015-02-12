@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deployment-project plugin="plugin.deploytool" plugin-version="1.0">
-  <configuration target="target.standalone" target-name="Console Application" name="Untitled3" location="D:\mat_workspace" file="D:\mat_workspace\Untitled3.prj" build-checksum="2841520387">
-    <param.project.name>D:\mat_workspace\Untitled3.prj</param.project.name>
+  <configuration target="target.standalone" target-name="Console Application" name="Untitled1" location="D:\mat_workspace\caiwu" file="D:\mat_workspace\caiwu\Untitled1.prj" build-checksum="3860522082">
+    <param.project.name>D:\mat_workspace\caiwu\Untitled1.prj</param.project.name>
     <param.target.type>Console Application</param.target.type>
-    <param.appname>Untitled3</param.appname>
-    <param.intermediate>${PROJECT_ROOT}\Untitled3\src</param.intermediate>
-    <param.output>${PROJECT_ROOT}\Untitled3\distrib</param.output>
+    <param.appname>Untitled1</param.appname>
+    <param.intermediate>${PROJECT_ROOT}\Untitled1\src</param.intermediate>
+    <param.output>${PROJECT_ROOT}\Untitled1\distrib</param.output>
     <param.embed.ctf>true</param.embed.ctf>
     <param.tbx_on_path>
       <item>all</item>
@@ -58,13 +58,13 @@
       <param.user.defined.mcr.options />
     </unset>
     <fileset.main>
-      <file>${PROJECT_ROOT}\caiwu\MM2csv.m</file>
+      <file>${PROJECT_ROOT}\MM2csv.m</file>
     </fileset.main>
     <fileset.resources />
     <fileset.package />
     <build-deliverables>
-      <file name="readme.txt" location="${PROJECT_ROOT}\Untitled3\distrib" optional="true">D:\mat_workspace\Untitled3\distrib\readme.txt</file>
-      <file name="Untitled3.exe" location="${PROJECT_ROOT}\Untitled3\distrib" optional="false">D:\mat_workspace\Untitled3\distrib\Untitled3.exe</file>
+      <file name="Untitled1.exe" location="${PROJECT_ROOT}\Untitled1\distrib" optional="false">D:\mat_workspace\caiwu\Untitled1\distrib\Untitled1.exe</file>
+      <file name="readme.txt" location="${PROJECT_ROOT}\Untitled1\distrib" optional="true">D:\mat_workspace\caiwu\Untitled1\distrib\readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>

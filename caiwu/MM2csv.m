@@ -35,8 +35,10 @@ function [] = MM2csv(fileName)
     zqmr = srcData(zqmr_rflag,:);
     zqmc = srcData(zqmc_rflag,:);
    
-    gpmr = regexprep(zqmr,'证券','股票');
-    gpmc = regexprep(zqmc,'证券','股票');
+    zqmr(:,4) = regexprep(zqmr(:,4),'证券','股票');
+    zqmc(:,4) = regexprep(zqmc(:,4),'证券','股票');
+    gpmr = zqmr;
+    gpmc = zqmc;
     
     nGpmrR = size(gpmr,1);
     nGpmcR = size(gpmc,1);
@@ -54,8 +56,8 @@ function [] = MM2csv(fileName)
     jy(nGpmrR+1:end,7:8) = gpmc(:,2:3);
     jy(1:nGpmrR,11) = gpmr(:,18);
     jy(nGpmrR+1:end,11) = gpmc(:,18);
-    jy(1:nGpmrR,16) = gpmr(:,6);
-    jy(nGpmrR+1:end,16) = regexprep(gpmc(:,6),'^-','');
+    jy(1:nGpmrR,16) = regexprep(gpmr(:,6),'\.00$','');
+    jy(nGpmrR+1:end,16) = regexprep(gpmc(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
     jy(1:nGpmrR,17) = gpmr(:,7);
     jy(nGpmrR+1:end,17) = gpmc(:,7);
     jy(1:nGpmrR,18) = gpmr(:,8);
@@ -130,8 +132,8 @@ function [] = MM2csv(fileName)
     hg(:,10) = cellstr('D890767292');
     hg(1:nRqhgR,13) = rqhg(:,2);
     hg(nRqhgR+1:end,13) = rqgh(:,2);
-    hg(1:nRqhgR,14) = rqhg(:,6);
-    hg(nRqhgR+1:end,14) = regexprep(rqgh(:,6),'^-','');
+    hg(1:nRqhgR,14) = regexprep(rqhg(:,6),'\.00$','');
+    hg(nRqhgR+1:end,14) = regexprep(rqgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
     hg(1:nRqhgR,15) = rqhg(:,7);
     hg(nRqhgR+1:end,15) = rqgh(:,7);
     hg(1:nRqhgR,16) = rqhg(:,8);
@@ -146,8 +148,9 @@ function [] = MM2csv(fileName)
     hg(:,23) = backBuyRate;
     nBargain_su = str2num(char(hg(:,15)));
     nBackbuy_rate = str2num(char(hg(:,23)));
-
+        
     hg(:,24) = cellstr(num2str(nBargain_su+nBackbuy_rate));
+    
     hg(1:nRqhgR,25) = rqhg(:,1);
     hg(nRqhgR+1:end,25) = rqgh(:,1);
     
@@ -161,9 +164,6 @@ function [] = MM2csv(fileName)
     hg_bill_code = strcat(hg_bill_code,hg(:,3),hg_delegate_code);
     hg(:,1) = hg_bill_code;
     
-%     hg_boursecode = cell(nRqhgR+nRqghR,1);
-%     hg_boursecode(:) = cellstr('102');
-%     hg_boursecode(gp_sh_flag) = cellstr('101');
     hg(:,41) = cellstr('101');
     
     hg_headline = {
@@ -178,7 +178,7 @@ function [] = MM2csv(fileName)
         };
     hg_finalData = [hg_headline;hg];
 % 	xlswrite(['hg',smpl_fileName,'.xls'],hg_finalData,1,'A1');
-    fwCell2CSVfmt(hg_finalData,['hg',smpl_fileName,'.csv']);
+    hg_fwCell2CSVfmt(hg_finalData,['hg',smpl_fileName,'.csv']);
     
 % -------------------------------------------------------------------------
 
@@ -207,3 +207,27 @@ function [] = fwCell2CSVfmt(data,fileName)
     end
     fclose(fidout);
 end
+
+
+function [] = hg_fwCell2CSVfmt(data,fileName)
+% write cell data to txt in csv format, like aa,123,中国
+% a row is a line
+    
+    [r,c] = size(data);
+    [fidout,msg] = fopen(fileName,'w','n','GBK');
+    assert(fidout~=-1,msg);
+    for i = 1:r ,
+        strLine = data{i,1};
+        for j = 2:c ,
+            if j == 24 ,
+                sum = sprintf('%0.2f',str2num(char(data{i,j})));
+                strLine = [strLine,',',sum];
+            else
+                strLine = [strLine,',',data{i,j}];
+            end
+        end
+        fprintf(fidout,'%s\r\n',strLine);
+    end
+    fclose(fidout);
+end
+

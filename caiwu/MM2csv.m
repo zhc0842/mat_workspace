@@ -75,8 +75,8 @@ function [] = MM2csv(fileName)
     jy(nGpmrR+1:end,37) = gpmc(:,18);
     
     bill_code = cell(nGpmrR+nGpmcR,1);
-    gpmr_sh_flag = str2num(char(gpmr(:,2)))>=500000;
-    gpmc_sh_flag = str2num(char(gpmc(:,2)))>=500000;
+    gpmr_sh_flag = str2num(char(gpmr(:,2))) >= 500000;
+    gpmc_sh_flag = str2num(char(gpmc(:,2))) >= 500000;
     gp_sh_flag = [gpmr_sh_flag;gpmc_sh_flag];
     bill_code(:) = cellstr('SZ');
     bill_code(gp_sh_flag) = cellstr('SH');
@@ -108,63 +108,102 @@ function [] = MM2csv(fileName)
 % -------------------------------------------------------------------------
     zyhgcc_rflag = ismember(srcData(:,4),'质押回购拆出');
     cczygh_rflag = ismember(srcData(:,4),'拆出质押购回');
-
+    bjhgcc_rflag = ismember(srcData(:,4),'报价回购拆出');
+    
     zyhgcc = srcData(zyhgcc_rflag,:);
     cczygh = srcData(cczygh_rflag,:);
+    bjhgcc = srcData(bjhgcc_rflag,:);
+    
     rqhg = regexprep(zyhgcc,'质押回购拆出','融券回购');
     rqgh = regexprep(cczygh,'拆出质押购回','融券购回');
+    bjhg = regexprep(bjhgcc,'报价回购拆出','融券回购');    
     
     nRqhgR = size(rqhg,1);
     nRqghR = size(rqgh,1);
-    hg = cell(nRqhgR+nRqghR,41);
+    nBjhgR = size(bjhg,1);
+    
+    hg = cell(nRqhgR+nRqghR+nBjhgR,41);
+    nRqhg_RqghR = nRqhgR+nRqghR;
     
     hg(:,2) = cellstr('9001');
     hg(1:nRqhgR,3) = rqhg(:,1);
-    hg(nRqhgR+1:end,3) = rqgh(:,1);
+    hg(nRqhgR+1:nRqhg_RqghR,3) = rqgh(:,1);
+    hg(nRqhg_RqghR+1:end,3) = bjhg(:,1);
     
     hg(1:nRqhgR,4) = cellstr('40006');
-    hg(nRqhgR+1:end,4) = cellstr('40009');
+    hg(nRqhgR+1:nRqhg_RqghR,4) = cellstr('40009');
+    hg(nRqhg_RqghR+1:end,4) = cellstr('40006');
+    
     hg(1:nRqhgR,5) = rqhg(:,4);
-    hg(nRqhgR+1:end,5) = rqgh(:,4);
+    hg(nRqhgR+1:nRqhg_RqghR,5) = rqgh(:,4);
+    hg(nRqhg_RqghR+1:end,5) = bjhg(:,4);
+    
     hg(1:nRqhgR,6) = rqhg(:,18);
-    hg(nRqhgR+1:end,6) = rqgh(:,18);
+    hg(nRqhgR+1:nRqhg_RqghR,6) = rqgh(:,18);
+    hg(nRqhg_RqghR+1:end,6) = bjhg(:,18);
+    
     hg(:,7) = cellstr('D890767292');
     hg(:,10) = cellstr('D890767292');
     hg(1:nRqhgR,13) = rqhg(:,2);
-    hg(nRqhgR+1:end,13) = rqgh(:,2);
+    hg(nRqhgR+1:nRqhg_RqghR,13) = rqgh(:,2);
+    hg(nRqhg_RqghR+1:end,13) = bjhg(:,2);
+    
     hg(1:nRqhgR,14) = regexprep(rqhg(:,6),'\.00$','');
-    hg(nRqhgR+1:end,14) = regexprep(rqgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
+    hg(nRqhgR+1:nRqhg_RqghR,14) = regexprep(rqgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
+    hg(nRqhg_RqghR+1:end,14) = regexprep(bjhg(:,6),'\.00$','');
+    
     hg(1:nRqhgR,15) = rqhg(:,7);
-    hg(nRqhgR+1:end,15) = rqgh(:,7);
+    hg(nRqhgR+1:nRqhg_RqghR,15) = rqgh(:,7);
+    hg(nRqhg_RqghR+1:end,15) = bjhg(:,7);
+    
     hg(1:nRqhgR,16) = rqhg(:,8);
-    hg(nRqhgR+1:end,16) = rqgh(:,8);
+    hg(nRqhgR+1:nRqhg_RqghR,16) = rqgh(:,8);
+    hg(nRqhg_RqghR+1:end,16) = bjhg(:,8);
+    
     hg(:,17:19) = cellstr('0');
     hg(1:nRqhgR,20) = rqhg(:,13);
-    hg(nRqhgR+1:end,20) = rqgh(:,13);
+    hg(nRqhgR+1:nRqhg_RqghR,20) = rqgh(:,13);
+    hg(nRqhg_RqghR+1:end,20) = bjhg(:,13);
+    
     hg(1:nRqhgR,21) = rqhg(:,1);
-    hg(nRqhgR+1:end,21) = rqgh(:,1);
-    backBuyRate = regexprep([rqhg(:,20);rqgh(:,20)],'^融\S+:','');
-    backBuyRate = regexprep(backBuyRate,'-\d+$','');
-    hg(:,23) = backBuyRate;
+    hg(nRqhgR+1:nRqhg_RqghR,21) = rqgh(:,1);
+    hg(nRqhg_RqghR+1:end,21) = bjhg(:,1);
+    
+    rqhg_rqgh_backBuyInterest = regexprep([rqhg(:,20);rqgh(:,20)],'^融\S+:','');
+    rqhg_rqgh_backBuyInterest = regexprep(rqhg_rqgh_backBuyInterest,'-\d+$','');
+    bjhg_backBuyInterest = regexprep(bjhg(:,20),'^\S+正常购回利息：','');
+    bjhg_backBuyInterest = regexprep(bjhg_backBuyInterest,'，\S+$','');
+    hg(1:nRqhg_RqghR,23) = rqhg_rqgh_backBuyInterest;
+    hg(nRqhg_RqghR+1:end,23) = bjhg_backBuyInterest;
+    
     nBargain_su = str2num(char(hg(:,15)));
-    nBackbuy_rate = str2num(char(hg(:,23)));
+    nBackbuy_interest = str2num(char(hg(:,23)));
         
-    hg(:,24) = cellstr(num2str(nBargain_su+nBackbuy_rate));
+    hg(:,24) = cellstr(num2str(nBargain_su+nBackbuy_interest));
     
     hg(1:nRqhgR,25) = rqhg(:,1);
-    hg(nRqhgR+1:end,25) = rqgh(:,1);
+    hg(nRqhgR+1:nRqhg_RqghR,25) = rqgh(:,1);
+    hg(nRqhg_RqghR+1:end,25) = bjhg(:,1);
     
     hg(1:nRqhgR,36) = rqhg(:,18);
-    hg(nRqhgR+1:end,36) = rqgh(:,18);
+    hg(nRqhgR+1:nRqhg_RqghR,36) = rqgh(:,18);
+    hg(nRqhg_RqghR+1:end,36) = bjhg(:,18);
     
-    hg_bill_code = cell(nRqhgR+nRqghR,1);
+    hg_bill_code = cell(nRqhgR+nRqghR+nBjhgR,1);
     
-    hg_bill_code(:) = cellstr('SH');
-    hg_delegate_code = [rqhg(:,15);rqgh(:,15)];
+    hg_sh_flag = ismember(hg(:,13),'204001');
+    
+    hg_bill_code(:) = cellstr('SZ');
+    hg_bill_code(hg_sh_flag) = cellstr('SH');
+    hg_delegate_code = [rqhg(:,15);rqgh(:,15);bjhg(:,15)];
     hg_bill_code = strcat(hg_bill_code,hg(:,3),hg_delegate_code);
     hg(:,1) = hg_bill_code;
     
-    hg(:,41) = cellstr('101');
+    hg(:,41) = cellstr('102');
+    hg(hg_sh_flag,41) = cellstr('101');
+    
+    
+    
     
     hg_headline = {
         'bill_code','pk_corp','trade_date','pk_operationcode',...
@@ -182,7 +221,7 @@ function [] = MM2csv(fileName)
     
 % -------------------------------------------------------------------------
 
-    other_flag = ~(zqmr_rflag | zqmc_rflag | zyhgcc_rflag | cczygh_rflag);
+    other_flag = ~(zqmr_rflag | zqmc_rflag | zyhgcc_rflag | cczygh_rflag | bjhgcc_rflag);
     if any(other_flag) ,
         other_data = srcData(other_flag,:);
         other_finalData = [headline;other_data];

@@ -75,8 +75,8 @@ function [] = MM2csv(fileName)
     jy(nGpmrR+1:end,37) = gpmc(:,18);
     
     bill_code = cell(nGpmrR+nGpmcR,1);
-    gpmr_sh_flag = str2num(char(gpmr(:,2)))>=600000;
-    gpmc_sh_flag = str2num(char(gpmc(:,2)))>=600000;
+    gpmr_sh_flag = str2num(char(gpmr(:,2)))>=500000;
+    gpmc_sh_flag = str2num(char(gpmc(:,2)))>=500000;
     gp_sh_flag = [gpmr_sh_flag;gpmc_sh_flag];
     bill_code(:) = cellstr('SZ');
     bill_code(gp_sh_flag) = cellstr('SH');
@@ -216,7 +216,14 @@ function [] = hg_fwCell2CSVfmt(data,fileName)
     [r,c] = size(data);
     [fidout,msg] = fopen(fileName,'w','n','GBK');
     assert(fidout~=-1,msg);
-    for i = 1:r ,
+    
+    strLine = data{1,1};
+    for j = 2:c ,
+        strLine = [strLine,',',data{1,j}];
+    end
+    fprintf(fidout,'%s\r\n',strLine);
+    
+    for i = 2:r ,
         strLine = data{i,1};
         for j = 2:c ,
             if j == 24 ,

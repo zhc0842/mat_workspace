@@ -109,93 +109,110 @@ function [] = MM2csv(fileName)
     zyhgcc_rflag = ismember(srcData(:,4),'质押回购拆出');
     cczygh_rflag = ismember(srcData(:,4),'拆出质押购回');
     bjhgcc_rflag = ismember(srcData(:,4),'报价回购拆出');
+    ccbjgh_rflag = ismember(srcData(:,4),'拆出报价购回');
     
     zyhgcc = srcData(zyhgcc_rflag,:);
     cczygh = srcData(cczygh_rflag,:);
     bjhgcc = srcData(bjhgcc_rflag,:);
+    ccbjgh = srcData(ccbjgh_rflag,:);
     
-    rqhg = regexprep(zyhgcc,'质押回购拆出','融券回购');
-    rqgh = regexprep(cczygh,'拆出质押购回','融券购回');
-    bjhg = regexprep(bjhgcc,'报价回购拆出','融券回购');    
+    zyhg = regexprep(zyhgcc,'质押回购拆出','融券回购');
+    zygh = regexprep(cczygh,'拆出质押购回','融券购回');
+    bjhg = regexprep(bjhgcc,'报价回购拆出','融券回购');
+    bjgh = regexprep(ccbjgh,'拆出报价购回','融券购回');
     
-    nRqhgR = size(rqhg,1);
-    nRqghR = size(rqgh,1);
+    nRqhgR = size(zyhg,1);
+    nRqghR = size(zygh,1);
     nBjhgR = size(bjhg,1);
+    nBjghR = size(bjgh,1);
     
-    hg = cell(nRqhgR+nRqghR+nBjhgR,41);
+    hg = cell(nRqhgR+nRqghR+nBjhgR+nBjghR,41);
     nRqhg_RqghR = nRqhgR+nRqghR;
+    nRqhg_Rqgh_BjhgR = nRqhgR+nRqghR+nBjhgR;
     
     hg(:,2) = cellstr('9001');
-    hg(1:nRqhgR,3) = rqhg(:,1);
-    hg(nRqhgR+1:nRqhg_RqghR,3) = rqgh(:,1);
-    hg(nRqhg_RqghR+1:end,3) = bjhg(:,1);
+    hg(1:nRqhgR,3) = zyhg(:,1);
+    hg(nRqhgR+1:nRqhg_RqghR,3) = zygh(:,1);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,3) = bjhg(:,1);
+    hg(nRqhg_Rqgh_BjhgR+1:end,3) = bjgh(:,1);
     
     hg(1:nRqhgR,4) = cellstr('40006');
     hg(nRqhgR+1:nRqhg_RqghR,4) = cellstr('40009');
-    hg(nRqhg_RqghR+1:end,4) = cellstr('40006');
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,4) = cellstr('40006');
+    hg(nRqhg_Rqgh_BjhgR+1:end,4) = cellstr('40009');
     
-    hg(1:nRqhgR,5) = rqhg(:,4);
-    hg(nRqhgR+1:nRqhg_RqghR,5) = rqgh(:,4);
-    hg(nRqhg_RqghR+1:end,5) = bjhg(:,4);
+    hg(1:nRqhgR,5) = zyhg(:,4);
+    hg(nRqhgR+1:nRqhg_RqghR,5) = zygh(:,4);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,5) = bjhg(:,4);
+    hg(nRqhg_Rqgh_BjhgR+1:end,5) = bjgh(:,4);
     
-    hg(1:nRqhgR,6) = rqhg(:,18);
-    hg(nRqhgR+1:nRqhg_RqghR,6) = rqgh(:,18);
-    hg(nRqhg_RqghR+1:end,6) = bjhg(:,18);
+    hg(1:nRqhgR,6) = zyhg(:,18);
+    hg(nRqhgR+1:nRqhg_RqghR,6) = zygh(:,18);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,6) = bjhg(:,18);
+    hg(nRqhg_Rqgh_BjhgR+1:end,6) = bjgh(:,18);
     
     hg(:,7) = cellstr('D890767292');
     hg(:,10) = cellstr('D890767292');
-    hg(1:nRqhgR,13) = rqhg(:,2);
-    hg(nRqhgR+1:nRqhg_RqghR,13) = rqgh(:,2);
-    hg(nRqhg_RqghR+1:end,13) = bjhg(:,2);
     
-    hg(1:nRqhgR,14) = regexprep(rqhg(:,6),'\.00$','');
-    hg(nRqhgR+1:nRqhg_RqghR,14) = regexprep(rqgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
-    hg(nRqhg_RqghR+1:end,14) = regexprep(bjhg(:,6),'\.00$','');
+    hg(1:nRqhgR,13) = zyhg(:,2);
+    hg(nRqhgR+1:nRqhg_RqghR,13) = zygh(:,2);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,13) = bjhg(:,2);
+    hg(nRqhg_Rqgh_BjhgR+1:end,13) = bjgh(:,2);
     
-    hg(1:nRqhgR,15) = rqhg(:,7);
-    hg(nRqhgR+1:nRqhg_RqghR,15) = rqgh(:,7);
-    hg(nRqhg_RqghR+1:end,15) = bjhg(:,7);
+    hg(1:nRqhgR,14) = regexprep(zyhg(:,6),'\.00$','');
+    hg(nRqhgR+1:nRqhg_RqghR,14) = regexprep(zygh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,14) = regexprep(bjhg(:,6),'\.00$','');
+    hg(nRqhg_Rqgh_BjhgR+1:end,14) = regexprep(bjgh(:,6),'(?:^-)(\d+)(?:\.00$)','$1');
     
-    hg(1:nRqhgR,16) = rqhg(:,8);
-    hg(nRqhgR+1:nRqhg_RqghR,16) = rqgh(:,8);
-    hg(nRqhg_RqghR+1:end,16) = bjhg(:,8);
+    hg(1:nRqhgR,15) = zyhg(:,7);
+    hg(nRqhgR+1:nRqhg_RqghR,15) = zygh(:,7);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,15) = bjhg(:,7);
+    hg(nRqhg_Rqgh_BjhgR+1:end,15) = deleteBlankInDoubles(str2num(char(hg(nRqhg_Rqgh_BjhgR+1:end,14)))*100);
+    
+    hg(1:nRqhgR,16) = zyhg(:,8);
+    hg(nRqhgR+1:nRqhg_RqghR,16) = zygh(:,8);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,16) = bjhg(:,8);
+    hg(nRqhg_Rqgh_BjhgR+1:end,16) = bjgh(:,8);
     
     hg(:,17:19) = cellstr('0');
-    hg(1:nRqhgR,20) = rqhg(:,13);
-    hg(nRqhgR+1:nRqhg_RqghR,20) = rqgh(:,13);
-    hg(nRqhg_RqghR+1:end,20) = bjhg(:,13);
     
-    hg(1:nRqhgR,21) = rqhg(:,1);
-    hg(nRqhgR+1:nRqhg_RqghR,21) = rqgh(:,1);
-    hg(nRqhg_RqghR+1:end,21) = bjhg(:,1);
+    hg(1:nRqhgR,20) = zyhg(:,13);
+    hg(nRqhgR+1:nRqhg_RqghR,20) = zygh(:,13);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,20) = bjhg(:,13);
+    hg(nRqhg_Rqgh_BjhgR+1:end,20) = bjgh(:,13);
     
-    rqhg_rqgh_backBuyInterest = regexprep([rqhg(:,20);rqgh(:,20)],'^融\S+:','');
+    hg(1:nRqhgR,21) = zyhg(:,1);
+    hg(nRqhgR+1:nRqhg_RqghR,21) = zygh(:,1);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,21) = bjhg(:,1);
+    hg(nRqhg_Rqgh_BjhgR+1:end,21) = bjgh(:,1);
+    
+    rqhg_rqgh_backBuyInterest = regexprep([zyhg(:,20);zygh(:,20)],'^融\S+:','');
     rqhg_rqgh_backBuyInterest = regexprep(rqhg_rqgh_backBuyInterest,'-\d+$','');
     bjhg_backBuyInterest = regexprep(bjhg(:,20),'^\S+正常购回利息：','');
     bjhg_backBuyInterest = regexprep(bjhg_backBuyInterest,'，\S+$','');
     hg(1:nRqhg_RqghR,23) = rqhg_rqgh_backBuyInterest;
-    hg(nRqhg_RqghR+1:end,23) = bjhg_backBuyInterest;
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,23) = bjhg_backBuyInterest;
+    hg(nRqhg_Rqgh_BjhgR+1:end,23) = deleteBlankInDoubles(str2num(char(hg(nRqhg_Rqgh_BjhgR+1:end,20)))-str2num(char(hg(nRqhg_Rqgh_BjhgR+1:end,15))));
+            
+    hg(:,24) = deleteBlankInDoubles(str2num(char(hg(:,15)))+str2num(char(hg(:,23))));
     
-    nBargain_su = str2num(char(hg(:,15)));
-    nBackbuy_interest = str2num(char(hg(:,23)));
-        
-    hg(:,24) = cellstr(num2str(nBargain_su+nBackbuy_interest));
+    hg(1:nRqhgR,25) = zyhg(:,1);
+    hg(nRqhgR+1:nRqhg_RqghR,25) = zygh(:,1);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,25) = bjhg(:,1);
+    hg(nRqhg_Rqgh_BjhgR+1:end,25) = bjgh(:,1);
     
-    hg(1:nRqhgR,25) = rqhg(:,1);
-    hg(nRqhgR+1:nRqhg_RqghR,25) = rqgh(:,1);
-    hg(nRqhg_RqghR+1:end,25) = bjhg(:,1);
+    hg(1:nRqhgR,36) = zyhg(:,18);
+    hg(nRqhgR+1:nRqhg_RqghR,36) = zygh(:,18);
+    hg(nRqhg_RqghR+1:nRqhg_Rqgh_BjhgR,36) = bjhg(:,18);
+    hg(nRqhg_Rqgh_BjhgR+1:end,36) = bjgh(:,18);
     
-    hg(1:nRqhgR,36) = rqhg(:,18);
-    hg(nRqhgR+1:nRqhg_RqghR,36) = rqgh(:,18);
-    hg(nRqhg_RqghR+1:end,36) = bjhg(:,18);
-    
-    hg_bill_code = cell(nRqhgR+nRqghR+nBjhgR,1);
+    hg_bill_code = cell(nRqhgR+nRqghR+nBjhgR+nBjghR,1);
     
     hg_sh_flag = ismember(hg(:,13),'204001');
     
     hg_bill_code(:) = cellstr('SZ');
     hg_bill_code(hg_sh_flag) = cellstr('SH');
-    hg_delegate_code = [rqhg(:,15);rqgh(:,15);bjhg(:,15)];
+    hg_delegate_code = [zyhg(:,15);zygh(:,15);bjhg(:,15);bjgh(:,15)];
     hg_bill_code = strcat(hg_bill_code,hg(:,3),hg_delegate_code);
     hg(:,1) = hg_bill_code;
     
@@ -221,7 +238,7 @@ function [] = MM2csv(fileName)
     
 % -------------------------------------------------------------------------
 
-    other_flag = ~(zqmr_rflag | zqmc_rflag | zyhgcc_rflag | cczygh_rflag | bjhgcc_rflag);
+    other_flag = ~(zqmr_rflag | zqmc_rflag | zyhgcc_rflag | cczygh_rflag | bjhgcc_rflag | ccbjgh_rflag);
     if any(other_flag) ,
         other_data = srcData(other_flag,:);
         other_finalData = [headline;other_data];
@@ -265,15 +282,32 @@ function [] = hg_fwCell2CSVfmt(data,fileName)
     for i = 2:r ,
         strLine = data{i,1};
         for j = 2:c ,
-            if j == 24 ,
-                sum = sprintf('%0.2f',str2num(char(data{i,j})));
-                strLine = [strLine,',',sum];
-            else
+            %if j == 24 ,
+            %    sum = sprintf('%0.2f',str2num(char(data{i,j})));
+            %    strLine = [strLine,',',sum];
+            %else
                 strLine = [strLine,',',data{i,j}];
-            end
+            %end
         end
         fprintf(fidout,'%s\r\n',strLine);
     end
     fclose(fidout);
 end
 
+function cellOut = deleteBlankInDoubles(doubleIn)
+    [r,c] = size(doubleIn);
+    cellOut = cellstr(sprintf('%0.2f',doubleIn(1,1)));
+    for j = 2:c ,
+        cellOut = [cellOut,cellstr(sprintf('%0.2f',doubleIn(1,j)))];
+    end
+    if r<2 ,
+        return ;
+    end
+    for i=2:r ,
+        cellLine = cellstr(sprintf('%0.2f',doubleIn(i,1)));
+        for j=2:c ,
+            cellLine = [cellLine,cellstr(sprintf('%0.2f',doubleIn(i,j)))];
+        end
+        cellOut = [cellOut;cellLine];
+    end
+end
